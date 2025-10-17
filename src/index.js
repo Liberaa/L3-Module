@@ -10,7 +10,15 @@ const app = new GameApp()
 
 function boot() {
   const startButton = byId('btnStart')
-  startButton.addEventListener('click', () => app.start())
+
+  startButton.addEventListener('click', () => {
+    if (app.isRunning) return
+    app.start()
+    startButton.disabled = true
+    startButton.textContent = 'Running'
+  })
+
+  window.addEventListener('beforeunload', () => app.stop())
 }
 
 if (document.readyState === 'loading') {

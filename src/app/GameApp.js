@@ -11,8 +11,11 @@ export class GameApp {
   #menu = new Menu()
   #music = new Music(AUDIO_CONFIG)
   #hotkeys = new Hotkeys()
+  #running = false
 
   start() {
+    if (this.#running) return
+    this.#running = true
     this.#wireHotkeys()
     this.#scenes = new SceneManager()
     this.#game = new Game('platform', PLAYER_OPTIONS)
@@ -29,6 +32,18 @@ export class GameApp {
       ]
     })
   }
+
+  stop() {
+    if (!this.#running) return
+    this.#hotkeys.detach()
+    try { this.#menu.close() } catch {}
+    try { this.#game?.player?.remove() } catch {}
+    this.#game = null
+    this.#scenes = null
+    this.#running = false
+  }
+
+  get isRunning() { return this.#running }
 
   #wireHotkeys() {
     this.#hotkeys.bind(AUDIO_CONFIG.menuKey, () => this.openMenu())
