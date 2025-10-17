@@ -1,4 +1,8 @@
 
+export const PLAYER_OPTIONS = Object.freeze({
+  movementSpeed: 10,
+  jumpStrengthValue: 15
+})
 
 export const AUDIO_CONFIG = Object.freeze({
   src: '../music/background.mp3',
