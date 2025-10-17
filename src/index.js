@@ -14,11 +14,8 @@ function boot() {
   startButton.addEventListener('click', () => {
     if (app.isRunning) return
     app.start()
-    startButton.disabled = true
-    startButton.textContent = 'Running'
+    startButton.style.display = 'none'
   })
-
-  window.addEventListener('beforeunload', () => app.stop())
 }
 
 if (document.readyState === 'loading') {
