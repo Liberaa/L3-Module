@@ -16,5 +16,8 @@
     "url": "https://github.com/Liberaa/L3-Module/issues"
   },
   "homepage": "https://github.com/Liberaa/L3-Module#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "learn2dgame-js": "^1.0.10"
+  }
 }
