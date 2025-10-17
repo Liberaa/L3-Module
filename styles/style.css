@@ -56,3 +56,48 @@ h1 {
     color: var(--muted);
     line-height: 1.5;
 }
+
+.coin {
+    box-shadow: 0 4px 10px #ffea00aa;
+    transform: translateZ(0);
+    animation: coinFloat 1.6s ease-in-out infinite, coinSpin 2.4s linear infinite;
+}
+
+.coin::before {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border-radius: 50%;
+    background:
+        radial-gradient(60% 60% at 35% 35%, #fff6 0%, #fff0 55%),
+        linear-gradient(160deg, #ffe082 0%, #ffc107 70%);
+    box-shadow:
+        0 0 0 1px #ff000055 inset,
+        0 0 12px #ff0000aa inset;
+}
+
+@keyframes coinFloat {
+
+    0%,
+    100% {
+        transform: translateY(0)
+    }
+
+    50% {
+        transform: translateY(-6px)
+    }
+}
+
+@keyframes coinSpin {
+    0% {
+        filter: brightness(1)
+    }
+
+    50% {
+        filter: brightness(1.2)
+    }
+
+    100% {
+        filter: brightness(1)
+    }
+}
