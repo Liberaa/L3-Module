@@ -1,0 +1,82 @@
+# Platformer Game
+
+A 2D platformer game with 5 levels, moving platforms, vanishing obstacles, and coin collection.
+
+![Game Screenshot](./screenshot.webp)
+
+## Play the Game
+
+**Live Demo:** [https://liberaa.github.io/L3-Module/](#)
+
+The game runs in your browser - no installation needed. Just click the link and start playing!
+
+## Features
+
+- 5 unique levels with increasing difficulty
+- Multiple platform types (moving, vanishing, deadly)
+- Coin collection system
+- Background music
+- Pause menu system
+- Score tracking across levels
+
+## How to Play
+
+### Controls
+
+- **A** - Move left
+- **D** - Move right  
+- **Space** - Jump
+- **M** - Open pause menu
+- **D** (on game start) - Start background music
+
+### Objective
+
+Collect coins to earn points. Each coin gives you 10 points. Reach 20 points to advance to the next level. Complete all 5 levels to finish the game.
+
+### Tips
+
+- Pink and cyan platforms disappear when you land on them
+- Red and black obstacles are deadly - avoid touching them
+- Moving platforms can help you reach higher areas
+- Use the pause menu (M key) to take breaks
+
+## Run Locally
+
+If you want to run the game on your own computer:
+
+1. Clone the repository
+```bash
+git clone https://github.com/Liberaa/L3-Module.git
+cd L3-Module
+```
+
+2. Install dependencies
+```bash
+npm install
+```
+
+3. Open with a local server
+   - Use VS Code Live Server extension
+   - Then open `RunWithGoLive.html`
+
+## Built With
+- [learn2dgame-js](https://github.com/Liberaa/module) - Custom 2D game engine module
+
+## Technical Details
+
+The game is built using object-oriented JavaScript with the learn2dgame-js module, which provides collision detection, physics, and game element management.
+
+### Project Structure
+
+```
+src/
+├── app/         - Application logic and game lifecycle
+├── domain/      - Level definitions and building
+├── ui/          - User interface components
+├── config/      - Game configuration and constants
+└── index.js     - Application entry point
+```
+
+## License
+
+MIT License
