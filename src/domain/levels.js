@@ -1,5 +1,7 @@
 // Here we define multiple levels for the game using factory functions for different elements.
-// Develepors can also creat new levels by following the established pattern. <3 
+// Develepors can also creat new levels by following the established pattern. <3
+import { ElementType } from '../config/constants.js'
+
 import { ElementType } from '../config/constants.js'
 
 const GROUND_HEIGHT = 300
@@ -155,5 +157,50 @@ function createMovingPlatformY(id, x, y, width, height, color, velocityY) {
     height, 
     color, 
     velocityY 
+  }
+}
+
+function createVanishingPlatform(id, x, y, width, height, color) {
+  return { 
+    type: ElementType.VANISHING_PLATFORM, 
+    id, 
+    x, 
+    y, 
+    width, 
+    height, 
+    color 
+  }
+}
+
+function createDeadly(id, x, y, width, height) {
+  return { 
+    type: ElementType.DEADLY, 
+    id, 
+    x, 
+    y, 
+    width, 
+    height 
+  }
+}
+
+function createMovingDeadly(id, x, y, width, height, velocityX, velocityY) {
+  return { 
+    type: ElementType.DEADLY, 
+    id, 
+    x, 
+    y, 
+    width, 
+    height, 
+    velocityX, 
+    velocityY 
+  }
+}
+
+function createCoin(id, x, y) {
+  return { 
+    type: ElementType.COIN, 
+    id, 
+    x, 
+    y 
   }
 }
