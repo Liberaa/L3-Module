@@ -2,7 +2,6 @@
 // Develepors can also creat new levels by following the established pattern. <3
 import { ElementType } from '../config/constants.js'
 
-import { ElementType } from '../config/constants.js'
 
 const GROUND_HEIGHT = 300
 const GROUND_Y_POSITION = 780
