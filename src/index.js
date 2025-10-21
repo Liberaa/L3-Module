@@ -26,11 +26,11 @@ function setupStartButton() {
 
 function getStartButton() {
   const button = document.getElementById(START_BUTTON_ID)
-  
+
   if (!button) {
     throw new Error(`Start button with id '${START_BUTTON_ID}' not found in DOM`)
   }
-  
+
   return button
 }
 
@@ -40,7 +40,7 @@ function attachStartHandler(button) {
 
 function handleStartClick(button) {
   if (isGameAlreadyRunning()) return
-  
+
   startGame()
   hideStartButton(button)
 }

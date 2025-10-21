@@ -21,9 +21,9 @@ export class Hotkeys {
   }
 
   #createHotkeyConfig(handler, options) {
-    return { 
-      handler, 
-      once: this.#shouldFireOnce(options) 
+    return {
+      handler,
+      once: this.#shouldFireOnce(options)
     }
   }
 
@@ -38,9 +38,9 @@ export class Hotkeys {
   #dispatch = (event) => {
     const pressedKey = this.#normalizeKey(event.key)
     const hotkeyConfig = this.#findHandler(pressedKey)
-    
+
     if (this.#noHandlerFound(hotkeyConfig)) return
-    
+
     this.#executeHandler(pressedKey, hotkeyConfig)
   }
 
@@ -54,7 +54,7 @@ export class Hotkeys {
 
   #executeHandler(key, config) {
     config.handler()
-    
+
     if (this.#shouldRemoveAfterExecution(config)) {
       this.#removeHandler(key)
     }

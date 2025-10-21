@@ -12,7 +12,7 @@ export class GameApp {
   #music = new Music(AUDIO_CONFIG)
   #hotkeys = new Hotkeys()
   #running = false
-// test from pc
+  // test from pc
   start() {
     if (this.#running) return
     this.#running = true
@@ -36,8 +36,8 @@ export class GameApp {
   stop() {
     if (!this.#running) return
     this.#hotkeys.detach()
-    try { this.#menu.close() } catch {}
-    try { this.#game?.player?.remove() } catch {}
+    try { this.#menu.close() } catch { }
+    try { this.#game?.player?.remove() } catch { }
     this.#game = null
     this.#scenes = null
     this.#running = false

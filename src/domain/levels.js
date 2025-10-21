@@ -1,8 +1,6 @@
 // Here we define multiple levels for the game using factory functions for different elements.
 // Develepors can also creat new levels by following the established pattern. <3
 import { ElementType } from '../config/constants.js'
-
-
 const GROUND_HEIGHT = 300
 const GROUND_Y_POSITION = 780
 const GROUND_START_X = -5
@@ -111,95 +109,95 @@ function createLevel5() {
 
 // Helper factory functions - Chapter 3: Use descriptive names
 function createGround(x, y, width, height) {
-  return { 
-    type: ElementType.GROUND, 
-    x, 
-    y, 
-    width, 
-    height, 
-    color: 'purple' 
+  return {
+    type: ElementType.GROUND,
+    x,
+    y,
+    width,
+    height,
+    color: 'purple'
   }
 }
 
 function createPlatform(id, x, y, width, height, color = 'gray') {
-  return { 
-    type: ElementType.PLATFORM, 
-    id, 
-    x, 
-    y, 
-    width, 
-    height, 
-    color 
+  return {
+    type: ElementType.PLATFORM,
+    id,
+    x,
+    y,
+    width,
+    height,
+    color
   }
 }
 
 function createMovingPlatformX(id, x, y, width, height, color, velocityX) {
-  return { 
-    type: ElementType.MOVING_PLATFORM_X, 
-    id, 
-    x, 
-    y, 
-    width, 
-    height, 
-    color, 
-    velocityX 
+  return {
+    type: ElementType.MOVING_PLATFORM_X,
+    id,
+    x,
+    y,
+    width,
+    height,
+    color,
+    velocityX
   }
 }
 
 function createMovingPlatformY(id, x, y, width, height, color, velocityY) {
-  return { 
-    type: ElementType.MOVING_PLATFORM_Y, 
-    id, 
-    x, 
-    y, 
-    width, 
-    height, 
-    color, 
-    velocityY 
+  return {
+    type: ElementType.MOVING_PLATFORM_Y,
+    id,
+    x,
+    y,
+    width,
+    height,
+    color,
+    velocityY
   }
 }
 
 function createVanishingPlatform(id, x, y, width, height, color) {
-  return { 
-    type: ElementType.VANISHING_PLATFORM, 
-    id, 
-    x, 
-    y, 
-    width, 
-    height, 
-    color 
+  return {
+    type: ElementType.VANISHING_PLATFORM,
+    id,
+    x,
+    y,
+    width,
+    height,
+    color
   }
 }
 
 function createDeadly(id, x, y, width, height) {
-  return { 
-    type: ElementType.DEADLY, 
-    id, 
-    x, 
-    y, 
-    width, 
-    height 
+  return {
+    type: ElementType.DEADLY,
+    id,
+    x,
+    y,
+    width,
+    height
   }
 }
 
 function createMovingDeadly(id, x, y, width, height, velocityX, velocityY) {
-  return { 
-    type: ElementType.DEADLY, 
-    id, 
-    x, 
-    y, 
-    width, 
-    height, 
-    velocityX, 
-    velocityY 
+  return {
+    type: ElementType.DEADLY,
+    id,
+    x,
+    y,
+    width,
+    height,
+    velocityX,
+    velocityY
   }
 }
 
 function createCoin(id, x, y) {
-  return { 
-    type: ElementType.COIN, 
-    id, 
-    x, 
-    y 
+  return {
+    type: ElementType.COIN,
+    id,
+    x,
+    y
   }
 }
