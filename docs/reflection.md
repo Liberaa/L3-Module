@@ -284,7 +284,10 @@ But the transformation from 200-line script to multi-class system was challengin
 
 Being honest, this was frustrating. Writing `#isPaused()` instead of checking `music.paused` felt like extra work. But the new structure is way more maintainable. If someone else works on this, it actually makes sense I think.
 
-I pushed myself to understand OOP instead of just writing functional code. The irritation was kindaa worth it.
+The most valuable lesson was understanding the difference between "code that works" and "code that communicates." My old version worked perfectly fine, but it didn't communicate clearly - it relied heavily on comments like `// --- Rörliga obstacles ---` to explain what was happening. The new version tells a story through named constants, small functions, and meaningful class names, making those comments unnecessary. When I replaced `if (this.x < 0)` with `if (this.#hitLeftBoundary())`, the code became self-documenting. This aligns with Chapter 4 (comments are a failure to express yourself in code).
+
+I really pushed myself to understand OOP because of the feedback, instead of just writing functional code. Honestly, the frustration didn’t feel worth it.
+Maybe if the project had been bigger and more complex, it would have made sense — but for this one, it was just painful. I spent way too much time on it and lost a lot of sleep :D
 
 ---
 
