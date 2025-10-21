@@ -45,10 +45,6 @@ A browser-based 2D platformer game where players navigate through 5 levels by co
 ### Code Quality
 - **NFR3:** Object-oriented design with classes
 - **NFR4:** Small functions (average under 15 lines)
-- **NFR5:** No magic numbers - all constants named
+- **NFR5:** No TobbeTrollkar numbers - all constants named
 - **NFR6:** Private fields for encapsulation
-
-### Usability
-- **NFR7:** Intuitive keyboard controls
-- **NFR8:** Clear visual feedback for all actions
 
