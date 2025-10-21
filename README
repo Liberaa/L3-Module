@@ -1,0 +1,30 @@
+# Clean Code Reflection - L3 Assignment
+
+**Student:** Lukas  
+**Date:** October 2025
+
+---
+
+## Introduction
+
+After my professor's feedback on L2 that my code was "mostly function-oriented" and needed to be "more object-oriented", I completely refactored my L3 app. My old version ([AppWithNpmPackage](https://github.com/Liberaa/AppWithNpmPackage)) was one 200-line JavaScript file :D. This took way longer because I'm still learning OOP, but I can see why it matters.
+
+**Old L3 Repository:** https://github.com/Liberaa/AppWithNpmPackage  
+**New L3 Repository:** Current repository : https://github.com/Liberaa/L3-Module 
+
+
+## Reflection
+
+This took 3x longer than my original version because I'm still learning OOP. Had to really think about what should be a class, what should be private, how things communicate. Professor's feedback about "hiding complexity" finally makes sense.
+
+The transformation from 200-line script to multi-class system was challenging. I kept thinking "is this really necessary?" when creating small classes. But now I see why - if I change how music works, I only touch one file.
+
+Being honest - this was frustrating. Writing `#isPaused()` instead of checking `music.paused` felt like extra work. But the new structure is way more maintainable. If someone else works on this, it actually makes sense now instead of my old "everything in one file" mess.
+
+I pushed myself to understand OOP instead of just writing functional code. The irritation was kinda worth it.
+
+---
+
+## References
+
+Martin, R. C. (2008). *Clean Code: A Handbook of Agile Software Craftsmanship*. Prentice Hall.

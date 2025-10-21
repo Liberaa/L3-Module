@@ -12,7 +12,6 @@ export class GameApp {
   #music = new Music(AUDIO_CONFIG)
   #hotkeys = new Hotkeys()
   #running = false
-  // test from pc
   start() {
     if (this.#running) return
     this.#running = true

@@ -1,4 +1,3 @@
-// Chapter 2: Meaningful Names
 
 export const PLAYER_OPTIONS = Object.freeze({
   movementSpeed: 10,
