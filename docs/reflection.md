@@ -2,15 +2,14 @@
 
 **Student:** Lukas Söderlund (ls224ec)  
 **Course:** 1DV610 – L3 Module  
-**Date:** 2025-05-05  
+**Date:** 2026-05-05  
 **Repository:** https://github.com/Liberaa/L3-Module
 
 ---
 
 ## Introduction
 
-This reflection covers chapters 2–11 of *Clean Code* and how each chapter has influenced the code in my L3 module. The L3 module is a browser-based 2D platformer game built on top of a third-party npm package (`learn2dgame-js`). The application is structured into layers: `app/` for the game orchestration, `domain/` for the game world model, `ui/` for user interface logic, and `config/` for constants. Where the chapter had no effect on the code, I say so honestly.
-
+This reflection covers chapters 2–>11 of *Clean Code* and how each chapter has influenced the code in my L3 module. The L3 module is a 2D platformer game built on top of my npm package (`learn2dgame-js`). The application is structured into layers: `app/` for the game orchestration, `domain/` for the game world model, `ui/` for user interface logic, and `config/` for constants.
 ---
 
 ## Chapter 2: Meaningful Names
@@ -19,7 +18,7 @@ The chapter introduces the idea that a name should reveal its *intent* — a rea
 
 ```javascript
 // constants.js
-export const TARGET_SCORE_PER_LEVEL = 20
+export const TARGET_SCORE_PER_LEVEL = 20 // Long describing names
 
 export const AUDIO_CONFIG = Object.freeze({
   src: './music/background.mp3',
@@ -243,7 +242,7 @@ function initializeApplication() {
 }
 ```
 
-The actual game construction is deferred to `GameApp.start()`, which is only called when the user clicks the Start button — this separation means the page loads instantly and the game only initializes on demand. One violation is that `SceneManager` from the library is a singleton stored in `window.__sceneManager`, which means construction leaks into global state and cannot be controlled. If `stop()` followed by `start()` were called multiple times, stale state in the singleton could cause bugs. A factory or dependency injection pattern would be cleaner, but the library's design makes that impossible without wrapping it entirely.
+The actual game construction is deferred to `GameApp.start()`, which is only called when the user clicks the Start button — this separation means the page loads instantly and the game only initializes on demand. One violation is that `SceneManager` from the library is a singleton stored in `window.__sceneManager`, which means construction leaks into global state and cannot be controlled, that makes it less oop and I know this. If `stop()` followed by `start()` were called multiple times, stale state in the singleton could cause bugs. A factory or dependency injection pattern would be cleaner here.
 
 ---
 
