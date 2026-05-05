@@ -1,100 +1,49 @@
-# Clean Code Reflection - L3 Assignment
+# Clean Code Reflection – L3 Module
 
-**Student:** Lukas Söderlund (ls224ec)
-
-**Date:** October 21 2025 
+**Student:** Lukas Söderlund (ls224ec)  
+**Course:** 1DV610 – L3 Module  
+**Date:** 2025-05-05  
+**Repository:** https://github.com/Liberaa/L3-Module
 
 ---
 
 ## Introduction
 
-After my professor's feedback on L2 that my code was "mostly function-oriented" and needed to be "more object-oriented", I completely refactored my L3 app. My old version ([AppWithNpmPackage](https://github.com/Liberaa/AppWithNpmPackage)) was one 200-line JavaScript file :D. This took way longer because I'm still learning OOP, but I can see why it matters.
-
-**Old L3 Repository:** https://github.com/Liberaa/AppWithNpmPackage  
-**New L3 Repository:** Current repository : https://github.com/Liberaa/L3-Module 
-
+This reflection covers chapters 2–11 of *Clean Code* and how each chapter has influenced the code in my L3 module. The L3 module is a browser-based 2D platformer game built on top of a third-party npm package (`learn2dgame-js`). The application is structured into layers: `app/` for the game orchestration, `domain/` for the game world model, `ui/` for user interface logic, and `config/` for constants. Where the chapter had no effect on the code, I say so honestly.
 
 ---
 
 ## Chapter 2: Meaningful Names
 
-The book says use names that reveal intention and avoid magic numbers. My old code had random numbers everywhere - `0.3`, `20`, `30` with no explanation. I created `constants.js` where everything has a name: `TARGET_SCORE_PER_LEVEL = 20`, `AUDIO_CONFIG.volume = 0.3`. Now it's easy to find and change values, and to understand them.
+The chapter introduces the idea that a name should reveal its *intent* — a reader should not need to search for context to understand what a variable, function, or class does. Before refactoring, the codebase used unexplained literals like `20`, `0.3`, and `'platform'` scattered across the code. These were replaced with named constants in `constants.js`, each communicating not just the value but the purpose:
 
-**Old L3:**
 ```javascript
-const music = new Audio('./music/background.mp3')
-music.volume = 0.3 
-scenes.add(level1, 20)  // 20???
-new Game('wasd', { movementSpeed: 30 })  // Why 30? xD
-```
-
-**New L3:**
-```javascript
+// constants.js
 export const TARGET_SCORE_PER_LEVEL = 20
+
 export const AUDIO_CONFIG = Object.freeze({
-  src: '../music/background.mp3',
+  src: './music/background.mp3',
+  loop: true,
   volume: 0.3
 })
-this.#scenes.add(() => applyLevel(this.#game, level), TARGET_SCORE_PER_LEVEL)
+
+export const HOTKEYS = Object.freeze({
+  menu: 'm',
+  startMusic: 'd',
+  restart: 'r'
+})
 ```
+
+The chapter also says method names should be verbs and class names should be nouns. This guided naming throughout: `LevelBuilder` (noun, builds levels), `#restartFromBeginning()` (verb phrase, clear action), `#isPaused()` (predicate, reads like a question in an `if` statement). One interesting tension: the book recommends avoiding noise words, yet `DeadlyElement` uses "Element" as a suffix — this was kept intentionally because dropping it to just `Deadly` would lose the signal that it belongs to the `Element` class hierarchy.
 
 ---
 
 ## Chapter 3: Functions
 
-The chapter says functions should be small and do one thing. My professor said to "break down methods using inline comments as names" - exactly what I did. Old code was 200 lines in one file. Now I have tiny functions doing one specific thing each.
+The chapter's core rule is that functions should be small and do one thing at one level of abstraction. The `Music` class is the clearest example of this in the codebase — `play()` contains no logic of its own, only delegation:
 
-**Old L3:**
 ```javascript
-// Everything mixed together in one file
-const menu = new Menu()
-document.addEventListener('keydown', e => {
-    if (e.key.toLowerCase() === 'm') {
-        menu.create({ title: 'Pause', buttons: [...] })
-    }
-})
-const music = new Audio('./music/background.mp3')
-function level5() {
-    if(music.paused) { music.play() }
-    // 40 more lines...
-}
-```
-
-**New L3:**
-```javascript
-start() {
-  if (this.#isAlreadyRunning()) return
-  this.#initializeGame()
-  this.#setupHotkeys()
-}
-
-#initializeGame() {
-  this.#running = true
-  this.#scenes = new SceneManager()
-  this.#game = new Game('platform', PLAYER_OPTIONS)
-  this.#loadAllLevels()
-  this.#startFirstLevel()
-}
-```
-
----
-
-## Chapter 4: Comments
-
-Martin says good code doesn't need comments. My old code had Swedish comments everywhere: `// --- Rörliga obstacles ---`. I removed them by using better function names. Instead of "check if paused", I made `#isPaused()`.
-
-**Old L3:**
-```javascript
-function level5() {
-    // Starta musiken om den är pausad
-    if(music.paused) { music.play() }
-    // --- Rörliga obstacles ---
-    new Obstacle({ positionX: 200, velocityX: 3 })
-}
-```
-
-**New L3:**
-```javascript
+// Music.js
 play() {
   if (this.#isPaused()) {
     this.#restartFromBeginning()
@@ -104,190 +53,197 @@ play() {
 #isPaused() {
   return this.#audio.paused
 }
+
+#restartFromBeginning() {
+  this.#resetToStart()
+  this.#audio.play().catch(() => {})
+}
+
+#resetToStart() {
+  this.#audio.currentTime = 0
+}
 ```
+
+Each method does exactly one thing and names it. However, `start()` in `GameApp` is an honest counter-example — it creates the game, the scene manager, loads all levels, wires hotkeys, and starts music in one method. The book would flag this as doing too many things. The argument for keeping it together is that all these steps belong to the same abstraction level (bootstrapping the game), but a stricter reading of the chapter would extract each into its own method.
+
+---
+
+## Chapter 4: Comments
+
+The chapter argues that the need for a comment is often a failure to express intent through code, and that the best comment is a well-named function. Most comments were removed during refactoring by extracting named private methods — for example, instead of writing `// check if audio is paused`, the method `#isPaused()` was created. One comment remains in `constants.js`:
+
+```javascript
+// Use solution domain names
+export const ElementType = Object.freeze({ ... })
+```
+
+This is a *noise comment* — the constant name already communicates enough, and the comment adds nothing. The chapter would call this out directly. On the other hand, the empty `.catch(() => {})` in `Music` is a case where a comment *is* justified but missing — a future reader might assume the catch is a mistake rather than a deliberate response to the browser's autoplay policy. This is the kind of *explanation of intent* the chapter considers a good comment.
 
 ---
 
 ## Chapter 5: Formatting
 
-My professor said I was missing a `src/` folder structure. I created proper folders: `app/`, `domain/`, `ui/`, `config/`. Way easier to find things than one big file. I do think that this add complexity for a small app like this. 
+The chapter describes formatting as a form of communication — it shows which code belongs together and which does not. Within each file, private fields are declared first, followed by the constructor (if any), then public methods, then private helpers. This follows the *newspaper metaphor*: the most important interface is at the top, implementation details sink to the bottom.
 
-**Old L3:** Everything in one file  
-**New L3:**
+```javascript
+// GameApp.js – fields, then public, then private
+export class GameApp {
+  #game = null
+  #scenes = null
+  #menu = new Menu()
+  #music = new Music(AUDIO_CONFIG)
+  #hotkeys = new Hotkeys()
+  #running = false
+
+  start() { ... }      // public
+  openMenu() { ... }   // public
+  stop() { ... }       // public
+  get isRunning() { }  // public
+
+  #wireHotkeys() { }   // private, at the bottom
+}
 ```
-src/
-├── app/GameApp.js, Music.js
-├── config/constants.js
-├── domain/buildLevel.js, levels.js
-├── ui/Hotkeys.js
-└── index.js
-```
+
+Indentation is consistently 2 spaces across all files. One area where the chapter's rules were not fully applied: `start()` is long enough that a blank line separating the setup phase from the startup phase would improve readability, but this was not added.
 
 ---
 
 ## Chapter 6: Objects and Data Structures
 
-This was hardest for me. Daniel said that the code was "mostly function-oriented" and needed to be "more object-oriented". Old code had global variables anyone could mess with. Now I use private fields (`#field`) so only the class controls its data. Hides values and uses oop principles.
+The chapter draws a sharp distinction between *objects* (hide data, expose behavior) and *data structures* (expose data, have no behavior). The old `levels.js` returned plain JavaScript objects like `{ type: 'coin', x: 350, y: 550 }` — that is a data structure, not an object. The refactored version uses proper domain classes:
 
-**Old L3 (No encapsulation):**
 ```javascript
-// Everything global and exposed
-const music = new Audio('./music/background.mp3')
-music.loop = true
-music.volume = 0.3
+// Element.js – data is hidden, only getters are exposed
+export class Element {
+  #id
+  #x
+  #y
 
-function level5() {
-    if(music.paused) { music.play() }  // Anyone can access
-}
-```
-
-**New L3 (OOP - data hidden):**
-```javascript
-export class Music {
-  #audio  // Private! Weyyyyyyy!
-
-  play() {
-    if (this.#isPaused()) {
-      this.#restartFromBeginning()
-    }
+  constructor({ id = null, x, y }) {
+    this.#id = id
+    this.#x = x
+    this.#y = y
   }
 
-  #isPaused() { return this.#audio.paused }
+  get id() { return this.#id }
+  get x() { return this.#x }
+  get y() { return this.#y }
 }
 
-export class GameApp {
-  #music = new Music(AUDIO_CONFIG)  // Encapsulation baby!
-  #running = false
+export class Coin extends Element {}
+
+export class MovingPlatform extends Platform {
+  #velocityX
+  #velocityY
+
+  get velocityX() { return this.#velocityX }
+  get velocityY() { return this.#velocityY }
 }
 ```
 
-hide complexity inside objects, very najs great sucess!!
+This matters because `LevelBuilder` can now use `instanceof` checks instead of reading a raw `type` string — it talks to objects through behavior, not through inspecting their data fields. The chapter's warning about *hybrids* (half object, half data structure) was avoided by committing fully to the class-based approach.
 
 ---
 
 ## Chapter 7: Error Handling
 
-Old code had no error handling - just crashed if something broke :/.I have dedicated error methods and throw proper errors instead of returning null.
+The chapter states that error handling should not obscure the main logic, and that returning `null` forces callers to check for it everywhere. `getStartButton()` in `index.js` follows this by throwing a descriptive error rather than returning `null`:
 
-**Old L3:** No error handling at all  
-**New L3:**
 ```javascript
+// index.js
 function getStartButton() {
   const button = document.getElementById(START_BUTTON_ID)
   if (!button) {
-    throw new Error(`Start button with id '${START_BUTTON_ID}' not found`)
+    throw new Error(`Start button with id '${START_BUTTON_ID}' not found in DOM`)
   }
   return button
 }
+```
 
-#safelyCloseMenu() {
-  try { 
-    this.#menu.close() 
-  } catch (error) {
-    // Already closed
-  }
+The `stop()` method uses silent `try/catch` blocks for cleanup:
+
+```javascript
+// GameApp.js
+stop() {
+  this.#hotkeys.detach()
+  try { this.#menu.close() } catch {}
+  try { this.#game?.player?.remove() } catch {}
 }
 ```
+
+The chapter generally discourages swallowing errors silently. The argument here is that calling `close()` on an already-closed menu is not a true error condition — it is defensive cleanup. This is an honest tension: strictly following the chapter would require checking state before calling, but that adds complexity the silent catch avoids.
 
 ---
 
 ## Chapter 8: Boundaries
 
-Keep third-party code separate. Old version mixed module classes everywhere. Now `buildLevel.js` acts as boundary - if module changes, I only update one file.
+The chapter recommends wrapping third-party code so that the rest of the application is shielded from it. The `Music` class wraps the browser's `Audio` API — nothing outside `Music` knows about `currentTime`, `paused`, or `.play()`. If the Audio API changes, only `Music` needs updating. `LevelBuilder` serves a similar role for `learn2dgame-js`:
 
-**Old L3:**
 ```javascript
-function level1() {
-  new Obstacle({ id: 'ground', positionX: -5, ... })
-  new Coin({ id: 'gold-coin', positionX: 350, ... })
+// buildLevel.js – only this file knows about the library's Coin and Obstacle
+import { Coin as GameCoin, Obstacle } from '../../node_modules/learn2dgame-js/dist/learn2dgame-js.js'
+import { Coin, DeadlyElement, VanishingPlatform } from './Element.js'
+
+#createElement(element) {
+  if (element instanceof Coin) {
+    new GameCoin({ id: element.id, positionX: element.x, positionY: element.y })
+    return
+  }
+  new Obstacle({ deadly: element instanceof DeadlyElement, ... })
 }
 ```
 
-**New L3:**
-```javascript
-// buildLevel.js - Adapter protects my code
-export function applyLevel(game, level) {
-  for (const element of level.elements) {
-    createLevelElement(element)
-  }
-}
-
-// levels.js - Just data
-function createLevel1() {
-  return {
-    elements: [
-      createGround(-5, 780, 2000, 300),
-      createCoin('gold-coin', 350, 550)
-    ]
-  }
-}
-```
+The naming collision between the library's `Coin` and the domain class `Coin` is resolved by aliasing the import (`Coin as GameCoin`), keeping the boundary clean. One remaining violation is that `GameApp` imports directly from the library's `dist/` path — ideally a single adapter module would own that import.
 
 ---
 
 ## Chapter 9: Unit Tests
 
-Haven't written automated tests yet, but new structure makes testing way easier. Small pure functions like `isCoin()` would be simple to test. Old 200-line file with global state? Impossible to test hihi. But I will use manuell tests instead. 
+The chapter argues that clean tests are as important as clean production code, and that untested code rots. This module has no automated tests — `package.json` still contains `"test": "echo \"Error: no test specified\""`. This is an honest weakness. The positive side of the refactoring is that the domain classes are now *testable in isolation*: a `Level` and `Coin` can be constructed without a browser, and `LevelBuilder.build()` could be verified against expected DOM output using jsdom. The `Hotkeys` class is similarly testable — `bind()` and the internal dispatch behavior are pure enough for unit tests. The absence of tests means the only validation has been manual testing through Go Live, which cannot catch regressions.
 
 ---
 
 ## Chapter 10: Classes
 
-Single Responsibility Principle - each class does one thing. Instead of one file doing everything, now:
-- `GameApp` - game lifecycle
-- `Music` - audio only
-- `Hotkeys` - keyboard only
+The chapter's main principles are the *Single Responsibility Principle* (a class should have one reason to change) and keeping classes small. The professor's feedback directly asked for more classes, and this refactoring introduced `GameApp`, `Music`, `Hotkeys`, `MenuController`, `LevelBuilder`, `Level`, `Element`, `Coin`, `Platform`, `MovingPlatform`, `VanishingPlatform`, and `DeadlyElement` — each with a single clear responsibility:
 
-**Old L3:** No classes, everything procedural  
-**New L3:**
 ```javascript
-// Each class has ONE joberino
-export class GameApp {
-  start() { ... }
-  openMenu() { ... }
-}
+export class MenuController {  // only reason to change: start button behavior
+  #startButton
+  #app
 
-export class Music {
-  play() { ... }
-  pause() { ... }
-}
+  init() {
+    this.#startButton.addEventListener('click', () => this.#onStart())
+  }
 
-export class Hotkeys {
-  bind() { ... }
-  attach() { ... }
+  #onStart() {
+    if (this.#app.isRunning) return
+    this.#app.start()
+    this.#startButton.style.display = 'none'
+  }
 }
 ```
+
+One interesting question is whether `VanishingPlatform` and `Coin` justify being separate classes since they add no behavior — their bodies are empty. The book's perspective would be that they *do* have a reason to exist: they give `instanceof` a name, making `LevelBuilder` readable. An alternative would be an `isDeadly()` method on `Element`, which would be more polymorphic but would push game-engine concerns into the domain model.
 
 ---
 
 ## Chapter 11: Systems
 
-Separate construction from use. Old code did everything at once. Now `index.js` sets up the app, `GameApp` runs it.
+The chapter's key idea is to *separate construction from use* — the objects needed to run a system should be built in a dedicated startup phase, not mixed into business logic. In this application, `index.js` owns construction:
 
-**Old L3:** Everything happens immediately  
-**New L3:**
 ```javascript
-const app = new GameApp()  // Construction
+// index.js – only constructs, does not run game logic
+const app = new GameApp()
 
-function startGame() {
-  app.start()  // Use - controlled
+function initializeApplication() {
+  const startButton = getStartButton()
+  const menu = new MenuController(startButton, app)
+  menu.init()
 }
 ```
 
----
-
-## Overall Reflection
-
-This took 3X longer than my original version because I'm still learning OOP. Had to really think about what should be a class, what should be private, how things communicate. Professor's feedback on L2 about "hiding complexity" was a bit hard to understand for me.
-
-But the transformation from 200-line script to multi-class system was challenging. I kept thinking "is this really necessary?" when creating small classes. But I do se why. If I change how music works, I only touch one file. More developer friendly. 
-
-Being honest, this was frustrating. Writing `#isPaused()` instead of checking `music.paused` felt like extra work. But the new structure is way more maintainable. If someone else works on this, it actually makes sense I think.
-
-The most valuable lesson was understanding the difference between "code that works" and "code that communicates." My old version worked perfectly fine, but it didn't communicate clearly - it relied heavily on comments like `// --- Rörliga obstacles ---` to explain what was happening. The new version tells a story through named constants, small functions, and meaningful class names, making those comments unnecessary. When I replaced `if (this.x < 0)` with `if (this.#hitLeftBoundary())`, the code became self-documenting. This aligns with Chapter 4 (comments are a failure to express yourself in code).
-
-I really pushed myself to understand OOP because of the feedback, instead of just writing functional code. Honestly, the frustration didn’t feel worth it.
-Maybe if the project had been bigger and more complex, it would have made sense — but for this one, it was just painful. I spent way too much time on it and lost a lot of sleep :D
+The actual game construction is deferred to `GameApp.start()`, which is only called when the user clicks the Start button — this separation means the page loads instantly and the game only initializes on demand. One violation is that `SceneManager` from the library is a singleton stored in `window.__sceneManager`, which means construction leaks into global state and cannot be controlled. If `stop()` followed by `start()` were called multiple times, stale state in the singleton could cause bugs. A factory or dependency injection pattern would be cleaner, but the library's design makes that impossible without wrapping it entirely.
 
 ---
 
