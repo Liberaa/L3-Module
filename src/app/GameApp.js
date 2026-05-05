@@ -1,7 +1,7 @@
 import { Game, SceneManager, Menu, score } from '../../node_modules/learn2dgame-js/dist/learn2dgame-js.js'
 import { LevelBuilder } from '../domain/buildLevel.js'
 import { levels } from '../domain/levels.js'
-import { TARGET_SCORE_PER_LEVEL, PLAYER_OPTIONS, AUDIO_CONFIG } from '../config/constants.js'
+import { TARGET_SCORE_PER_LEVEL, PLAYER_OPTIONS, AUDIO_CONFIG, HOTKEYS } from '../config/constants.js'
 import { Music } from './Music.js'
 import { Hotkeys } from '../ui/Hotkeys.js'
 
@@ -15,15 +15,15 @@ export class GameApp {
 
   start() {
     if (this.#running) return
-    this.#running = true
-    this.#wireHotkeys()
-    this.#scenes = new SceneManager()
     this.#game = new Game('platform', PLAYER_OPTIONS)
+    this.#scenes = new SceneManager()
     for (const level of levels) {
       this.#scenes.add(() => new LevelBuilder(this.#game, level).build(), TARGET_SCORE_PER_LEVEL)
     }
     this.#scenes.set(0)
+    this.#wireHotkeys()
     this.#music.play()
+    this.#running = true
   }
 
   openMenu() {
@@ -49,8 +49,8 @@ export class GameApp {
   get isRunning() { return this.#running }
 
   #wireHotkeys() {
-    this.#hotkeys.bind(AUDIO_CONFIG.menuKey, () => this.openMenu())
-    this.#hotkeys.bind(AUDIO_CONFIG.startKey, () => this.#music.play(), { once: true })
+    this.#hotkeys.bind(HOTKEYS.menu, () => this.openMenu())
+    this.#hotkeys.bind(HOTKEYS.startMusic, () => this.#music.play(), { once: true })
     this.#hotkeys.attach()
   }
 }

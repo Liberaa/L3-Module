@@ -35,7 +35,7 @@ export class Music {
 
   #restartFromBeginning() {
     this.#resetToStart()
-    this.#audio.play()
+    this.#audio.play().catch(() => {})
   }
 
   #resetToStart() {
