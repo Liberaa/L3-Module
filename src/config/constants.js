@@ -11,7 +11,7 @@ export const HOTKEYS = Object.freeze({
 })
 
 export const AUDIO_CONFIG = Object.freeze({
-  src: '../music/background.mp3',
+  src: './music/background.mp3',
   loop: true,
   volume: 0.3,
   menuKey: HOTKEYS.menu,
